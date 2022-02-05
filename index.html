@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">
+</head>
+<body>
+    <h1>Jogadores</h1>
+    <table id="players">
+        <tr>
+            <th>Nome</th>
+            <th>Moedas</th>
+            <th>Level</th>
+        </tr>
+    </table>
+    <h1>Criar Jogador</h1>
+    <input id="player-name">
+    <button onclick="createPlayer()">Criar</button>
+</body>
+<script>
+    const url = 'https://localhost:7251/Player';
+    async function callApi(){
+        const response = await fetch(url);
+        let data = await response.json();
+
+        const table = document.getElementById("players");
+
+        for (const player of data) {
+            let tr = document.createElement("tr");
+
+            tr.appendChild(addTableData(player["name"]));
+            tr.appendChild(addTableData(player["coin"]));
+            tr.appendChild(addTableData(player["level"]));
+
+            table.appendChild(tr);
+        }
+    }
+
+    function addTableData(value) {
+        let td = document.createElement("td");
+        td.appendChild(document.createTextNode(value));
+        return td;
+    }
+
+    function createPlayer() {
+        const name = document.getElementById("player-name").value;
+
+        fetch(url, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify({ "name": name })
+        }).then(res => {
+            console.log("Request complete! response:", res);
+        });
+
+        
+    }
+
+    callApi();
+</script>
+</html>
